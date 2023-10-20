@@ -75,9 +75,9 @@ openFile: li $v0, 13
 createFile: li $v0, 55
   la $a0, finishedMsg
   li $a1, 1
-	syscall
 
-	terminate
+  syscall
+  terminate
 # end createFile
 
 readFilenameError: li $v0, 50
