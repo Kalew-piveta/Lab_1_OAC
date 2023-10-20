@@ -43,24 +43,25 @@ Deve ser criado um código com linguagem de programação Assembly MIPS um progr
 
 ## Tarefas do Trabalho
 
-[ ] - Ler um arquivo de entrada text ASCII com instruções 
 
-  [ ] - Abrir caixa de dialogo
+[x] - Abrir caixa de dialogo
 
-  [ ] - Pegar o nome do arquivo de entrada
+[x] - Pegar o nome do arquivo de entrada
+
+[ ] - Ler um arquivo de entrada text ASCII com instruções Assembly MIPS
 
 [ ] - Traduzir as instruções em código objeto montado em Hexadecimal
 
-  [ ] - Fazer tratamentos de erros
+    [ ] - Fazer tratamentos de erros
 
-  [ ] - Tratar representações de todos os registradores
+    [ ] - Tratar representações de todos os registradores
 
 [ ] - Criar um arquivo com o código objeto montado em Hexadecimal no formado MIF (Memory Inicialization File)
 
 [ ] - Escrever os arquivos de saída
 
-  [ ] - [NOME_ARQUIVO_ENTRADA]_data.mif
+    [ ] - [NOME_ARQUIVO_ENTRADA]_data.mif
 
-  [ ] - [NOME_ARQUIVO_ENTRADA]_text.mif
+    [ ] - [NOME_ARQUIVO_ENTRADA]_text.mif
 
 
