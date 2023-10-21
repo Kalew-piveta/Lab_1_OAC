@@ -6,8 +6,8 @@
 
 
 .data
-  filenameBuffer: .space 1024
-  fileBuffer: .space 1024
+  filenameBuffer: .space 256
+  fileBuffer: .space 2048
   getFilenameMsg: .asciiz "Arquivo de entrada:"
   finishedMsg: .asciiz "Arquivos gerados com sucesso"
   emptyFilename: .asciiz "Nome do arquivo não fornecido. Deseja inserir nome do arquivo? \n"
@@ -28,6 +28,7 @@
 jal readFilename
 print_src(filenameBuffer)
 jal openFile
+jal readFile
 terminate
 
 
@@ -41,20 +42,20 @@ readFilename: li $v0, 54
 
   la $t0, filenameBuffer
 
-remove_newLine: lb $t1, 0($t0)
-  beq $t1, 10, found_newLine
-  beq $t1, 0, found_null
-  addi $t0, $t0, 1
-  j remove_newLine
+  remove_newLine: lb $t1, 0($t0)
+    beq $t1, 10, found_newLine
+    beq $t1, 0, found_null
+    addi $t0, $t0, 1
+    j remove_newLine
 
-found_newLine:
-  sb $zero, 0($t0)
-  j end_remove_newLine
+  found_newLine:
+    sb $zero, 0($t0)
+    j end_remove_newLine
 
-found_null:
-end_remove_newLine:
+  found_null:
+  end_remove_newLine:
 
-jr $ra
+  jr $ra
 # end readFilename
 
 openFile: li $v0, 13
@@ -71,6 +72,15 @@ openFile: li $v0, 13
   jr $ra
 # end readFile
 
+readFile: li $v0, 14
+  la $a0, ($s0)
+  la $a1, fileBuffer
+  li $a2, 2048
+
+  syscall
+  
+  jr $ra
+
 # (WIP)
 createFile: li $v0, 55
   la $a0, finishedMsg
@@ -82,11 +92,9 @@ createFile: li $v0, 55
 
 readFilenameError: li $v0, 50
   la $a0, emptyFilename
-	syscall
-
-	beqz $a0, readFilename
-
-	terminate
+  syscall
+  beqz $a0, readFilename
+  terminate
 # end readFilenameError
 
 readFileError: li $v0, 55
