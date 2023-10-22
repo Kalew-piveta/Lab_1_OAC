@@ -18,7 +18,7 @@
 	syscall
 .end_macro
 
-.macro print_src (%str)
+.macro print_string (%str)
   li $v0, 4
   la $a0 %str
   syscall
@@ -26,9 +26,9 @@
 
 .text
 jal readFilename
-print_src(filenameBuffer)
 jal openFile
 jal readFile
+jal processLineData
 terminate
 
 
@@ -80,6 +80,29 @@ readFile: li $v0, 14
   syscall
   
   jr $ra
+
+processLineData: 
+  la $t0, fileBuffer 
+
+  loop: lb $t1, 0($t0)
+  bne  $t1, 46 next
+
+  lb $t1, 1($t0)
+
+  # verify if equal "d"
+  beq $t1, 100, find_newLine
+
+  next: addi $t0, $t0, 1
+  j loop
+
+find_newLine:
+
+  addi $t0, $t0, 1
+  lb $t1, 0($t0)
+  beq $t1, 10
+  
+  terminate
+
 
 # (WIP)
 createFile: li $v0, 55
