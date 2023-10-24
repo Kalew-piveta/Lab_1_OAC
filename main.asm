@@ -10,7 +10,7 @@
   fileBuffer: .space 2048
   getFilenameMsg: .asciiz "Arquivo de entrada:"
   finishedMsg: .asciiz "Arquivos gerados com sucesso"
-  emptyFilename: .asciiz "Nome do arquivo não fornecido. Deseja inserir nome do arquivo? \n"
+  emptyFilename: .asciiz "Nome do arquivo não fornecido. Deseja inserir nome do arquivo?"
   fileNotFound: .asciiz "Arquivo não encontrado."
 
 .macro terminate
@@ -99,7 +99,6 @@ find_newLine:
 
   addi $t0, $t0, 1
   lb $t1, 0($t0)
-  beq $t1, 10
   
   terminate
 
@@ -121,7 +120,7 @@ readFilenameError: li $v0, 50
 # end readFilenameError
 
 readFileError: li $v0, 55
-  la $a0, fileNotFound
+	la $a0, fileNotFound
 	li $a2, 0
 	syscall
 
