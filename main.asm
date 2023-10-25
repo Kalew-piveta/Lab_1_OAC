@@ -6,12 +6,15 @@
 
 
 .data
-  filenameBuffer: .space 256
+  filenameBuffer: .asciiz "/Users/paulohenrique/Desktop/college/OAC/lab1/example_saida.asm"  #.space 256
   fileBuffer: .space 2048
   getFilenameMsg: .asciiz "Arquivo de entrada:"
   finishedMsg: .asciiz "Arquivos gerados com sucesso"
   emptyFilename: .asciiz "Nome do arquivo não fornecido. Deseja inserir nome do arquivo?"
   fileNotFound: .asciiz "Arquivo não encontrado."
+
+  # Labels space
+  labels: .space 1024
 
 .macro terminate
 	li $v0, 10
@@ -25,14 +28,14 @@
 .end_macro
 
 .text
-jal readFilename
-jal openFile
-jal readFile
-jal processLineData
+#jal read_filename
+jal open_file
+jal load_file
+jal process_text_segment
 terminate
 
 
-readFilename: li $v0, 54
+read_filename: li $v0, 54
   la $a0, getFilenameMsg
   la $a1, filenameBuffer
   li $a2, 256
@@ -58,7 +61,7 @@ readFilename: li $v0, 54
   jr $ra
 # end readFilename
 
-openFile: li $v0, 13
+open_file: li $v0, 13
   la $a0, filenameBuffer
   li $a1, 0
   syscall
@@ -72,36 +75,32 @@ openFile: li $v0, 13
   jr $ra
 # end readFile
 
-readFile: li $v0, 14
+load_file: li $v0, 14
   la $a0, ($s0)
   la $a1, fileBuffer
   li $a2, 2048
-
   syscall
-  
   jr $ra
 
-processLineData: 
-  la $t0, fileBuffer 
+process_text_segment: 
+  la $t0, fileBuffer
 
-  loop: lb $t1, 0($t0)
-  bne  $t1, 46 next
+  find_text_segment: lb $t1, 0($t0)
 
-  lb $t1, 1($t0)
+    # verify if the current charactere is equal "."
+    bne  $t1, 0x0000002E, next_char
 
-  # verify if equal "d"
-  beq $t1, 100, find_newLine
+    # verify if the next charactere is equal "t"
+    lb $t1, 1($t0)
+    beq $t1, 0x00000074, found_text_segment
 
-  next: addi $t0, $t0, 1
-  j loop
+    next_char: addi $t0, $t0, 0x00000002
 
-find_newLine:
+    j find_text_segment
 
-  addi $t0, $t0, 1
-  lb $t1, 0($t0)
+  # Found text segment, jump to next instruction in next line
+  found_text_segment: addi $t0, $t0, 0x00000006
   
-  terminate
-
 
 # (WIP)
 createFile: li $v0, 55
@@ -115,7 +114,7 @@ createFile: li $v0, 55
 readFilenameError: li $v0, 50
   la $a0, emptyFilename
   syscall
-  beqz $a0, readFilename
+  beqz $a0, read_filename
   terminate
 # end readFilenameError
 
